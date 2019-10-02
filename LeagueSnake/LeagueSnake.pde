@@ -31,7 +31,7 @@ int direction = UP;
 int foodEaten = 0;
 
 ArrayList<Segment> body = new ArrayList<Segment>();
-body.add(new Segment());
+  
 
 
 //*
@@ -42,6 +42,7 @@ body.add(new Segment());
 void setup() {
 size(500, 500);
 head = new Segment(100, 100);
+body.add(head);
 frameRate(20);
 dropFood();
 }
@@ -89,26 +90,30 @@ void drawSnake() {
 
 void drawTail() {
   //Draw each segment of the tail 
-  for(int i = foodEaten; i > 0; i--){
-  rect((head.xmember--), (head.ymember--), 10, 10);
+  for(int i = 0; i < body.size(); i++){
+  rect((body.get(i).xmember), (body.get(i).ymember), 10, 10);
   }
 }
 
 void manageTail() {
   //After drawing the tail, add a new segment at the "start" of the tail and remove the one at the "end" 
   //This produces the illusion of the snake tail moving.
-  drawTail();
-  print(body.length);
-  body[foodEaten] = new Segment(head.xmember, head.ymember);
   checkTailCollision();
+  Segment yeet = new Segment(head.xmember, head.ymember);
+  body.add(yeet);
+  drawTail();
+  rect(head.xmember, head.ymember, 10, 10);
+  if(body.size() > 0){
+    body.remove(body.size()-1);
+  }
 }
 
 void checkTailCollision() {
   //If the snake crosses its own tail, shrink the tail back to one segment
-  for(int i = body.length-1; i > -1; i--){
-    if(head.xmember == body[i].xmember && head.ymember == body[i].ymember){
+  for(int i = body.size()-1; i > 0; i--){
+    if(head.xmember == body.get(i).xmember && head.ymember == body.get(i).ymember){
     foodEaten = 0;
-    body = null;
+    body.clear();
   }
   }
 }
@@ -142,17 +147,17 @@ void move() {
     
   switch(direction) {
   case UP:
-     head.ymember-=5;
+     head.ymember-=10;
     break;
   case DOWN:
-     head.ymember+=5;
+     head.ymember+=10;
     break;
   case LEFT:
-  head.xmember-=5;
+  head.xmember-=10;
     
     break;
   case RIGHT:
-    head.xmember+=5;
+    head.xmember+=10;
     break;
   }
   checkBoundaries();
@@ -167,10 +172,10 @@ void checkBoundaries() {
      head.xmember = 500;
  }
  else if(head.ymember > 500){
-     head.xmember = 0;
+     head.ymember = 0;
  }
  else if(head.ymember < 0){
-     head.xmember = 500;
+     head.ymember = 500;
  }
 }
 
